@@ -363,6 +363,23 @@ main{max-width:720px;margin:0 auto;padding:14px 14px 0}
   box-shadow:4px 5px 0 var(--river-soft);padding:14px 16px;
 }
 .pg-h{font-size:19px;font-weight:700;margin:20px 0 8px}
+
+.gd{background:#fff;border:3px solid var(--ink);border-radius:16px 8px 16px 8px;margin-top:12px;box-shadow:3px 4px 0 var(--river-soft)}
+.gd summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;font-size:18px;display:flex;align-items:center;gap:10px}
+.gd summary::-webkit-details-marker{display:none}
+.gd summary::after{content:"＋";margin-left:auto;font-weight:500}
+.gd[open] summary::after{content:"－"}
+.gd .gd-b{padding:0 16px 14px;font-size:16px;line-height:1.75}
+.gd .gd-b ol,.gd .gd-b ul{padding-left:1.3em;margin-top:4px}
+.gd .gd-b li{margin-top:4px}
+.gd .gd-b p+p,.gd .gd-b ul,.gd .gd-b ol{margin-top:8px}
+.gd .tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 8px;margin-right:6px;border:2px solid var(--ink);border-radius:10px 6px 10px 6px;background:var(--marigold);vertical-align:1px}
+.gd .warn{background:var(--lotus);padding:8px 10px;border-radius:10px;margin-top:8px}
+.wipe-ask{width:100%;max-width:360px;background:#fff;border:3px solid var(--ink);border-radius:16px 8px 16px 8px;padding:12px;font-size:15px;font-weight:500}
+.wipe-ask input{width:100%;margin-top:8px;padding:10px;font:inherit;border:2px solid var(--ink);border-radius:10px;background:var(--paper-2)}
+.wipe-act{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px}
+.wipe-act .btn:disabled{opacity:.4}
+.wipe{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:6px}
 .note{font-size:15px;font-weight:500;line-height:1.6;margin-top:8px}
 .fld{
   width:100%;font:inherit;font-size:18px;font-weight:500;color:var(--ink);background:#fff;
@@ -573,10 +590,24 @@ input[type=checkbox]{-webkit-appearance:auto;appearance:auto}
   </div>
 
   <div class="treats" id="treats"></div>
+  <button class="btn" data-go="guide" type="button">使用須知</button>
 
   <button class="open" id="open">翻開手冊
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#121826" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6 L9 12 L15 6"/></svg>
   </button>
+
+  <div class="wipe" id="wipe">
+    <button class="x" type="button" data-w="章">清除章</button>
+    <button class="x" type="button" data-w="匯率">清除匯率</button>
+    <button class="x" type="button" data-w="購物清單">清除購物清單</button>
+    <button class="x" type="button" data-w="照片">清除照片</button>
+    <button class="x" type="button" data-w="全部">清除全部</button>
+  </div>
+  <div class="wipe-ask" id="wipeAsk" hidden>
+    <p id="wipeMsg"></p>
+    <input id="wipeIn" type="text" autocomplete="off" autocapitalize="off" aria-label="輸入文字確認">
+    <div class="wipe-act"><button class="btn" id="wipeGo" type="button" disabled>確定清除</button><button class="x" id="wipeNo" type="button">取消</button></div>
+  </div>
 </section>
 
 <div id="view-book" hidden>
@@ -690,6 +721,113 @@ input[type=checkbox]{-webkit-appearance:auto;appearance:auto}
   <div id="photoList"></div>
 </section>
 
+<section class="page" id="view-guide" hidden aria-label="使用須知">
+  <div class="pagebar"><button class="back" data-go="cover">回封面</button><span class="ptitle">使用須知</span></div>
+  <p class="note">點一下標題就會展開。看不懂的地方先看最後一項「常見問題」。</p>
+
+  <details class="gd" open>
+    <summary>1. 先看這個：資料存在哪裡</summary>
+    <div class="gd-b">
+      <p>這本手冊沒有帳號，也不會上傳到網路。你的資料都存在<b>這支手機的這個瀏覽器</b>裡。</p>
+      <ul>
+        <li><span class="tag">章</span>蓋章、匯率、購物清單：存在瀏覽器的 localStorage。</li>
+        <li><span class="tag">照片</span>存在瀏覽器的資料庫（IndexedDB），<b>不會出現在手機相簿</b>。</li>
+        <li>換手機、換瀏覽器、換網址開，都看不到原本的資料。</li>
+        <li>清除瀏覽器的網站資料、或用無痕模式，資料會不見。</li>
+      </ul>
+      <p class="warn">請固定用同一種方式開啟。iPhone 上，用 Safari 開和「加入主畫面」開，兩邊的資料可能是分開的。</p>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>2. 行程手冊與蓋章</summary>
+    <div class="gd-b">
+      <ol>
+        <li>封面按「行程手冊」，上方有 5 天的分頁。點分頁、按下方的「前一天／下一天」，或在畫面上左右滑動，都可以換天。</li>
+        <li>走到一個景點或吃完一餐，就<b>點那一列</b>蓋章。再點一次可以取消。</li>
+        <li>嘟嘟車會跟著最後一個章往前走，進度條會顯示「已蓋章 幾 / 幾」。</li>
+        <li>當天全部蓋完，上方那天的分頁會出現紅點。</li>
+        <li>蓋錯想重來：按進度條旁的「重新蓋章」，只會清掉<b>當天</b>的章。</li>
+      </ol>
+      <p>章會自動保存，重新整理或關掉再開都還在。</p>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>3. 匯率換算</summary>
+    <div class="gd-b">
+      <ol>
+        <li>點畫面上的計算機按鈕，就能打開匯率頁。</li>
+        <li>預設 1 泰銖 = 0.95 台幣。想改就直接改上面的數字，會自動記住。</li>
+        <li>在泰銖或台幣任一格輸入金額，另一格會自動算出來。下面有常用金額的對照表。</li>
+        <li>改亂了，按「恢復 0.95」就能還原。</li>
+      </ol>
+      <p>這個匯率只是參考，實際兌換請以店家或銀行為準。</p>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>4. 伴手禮清單</summary>
+    <div class="gd-b">
+      <ol>
+        <li>先在「要送誰」輸入名字按「新增」，也可以點家人、朋友、同事快速新增。</li>
+        <li>下面「可以買什麼」點一個想買的東西，再選要給誰；也可以在每個人的欄位直接輸入。</li>
+        <li>買到了就勾選，上面會顯示「已買 幾 / 幾」。</li>
+        <li>刪除東西：按旁邊的「刪除」。刪除一個人：按「刪除」會先變成「再按一次刪除」，3 秒內再按才會刪。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>5. 旅途相簿</summary>
+    <div class="gd-b">
+      <ol>
+        <li>按「＋ 新增照片」，可以一次選很多張。</li>
+        <li>每張照片可以選<b>第幾天</b>、寫<b>地點</b>、寫<b>幾句話</b>，也可以點小圖換成別的泰國小圖。文字會自動保存。</li>
+        <li>點照片可以放大，再點一下關閉。</li>
+        <li>刪除：按照片下方的「刪除」，會先變成「再按一次刪除」，3 秒內再按一次才會真的刪掉。</li>
+      </ol>
+      <p class="warn">加進來的是縮小後的版本（最長邊 1280px），不是原圖。原圖請留在手機相簿，不要刪。</p>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>6. 清除資料（重設）</summary>
+    <div class="gd-b">
+      <p>在封面最下方有 5 個按鈕：清除章、清除匯率、清除購物清單、清除照片、清除全部。</p>
+      <ol>
+        <li>按你要清的那一個，下面會出現輸入框。</li>
+        <li>照提示輸入<b>一模一樣的字</b>，例如「清除章」。</li>
+        <li>字對了，「確定清除」才能按。按下去就清掉，頁面會自動重新整理。</li>
+        <li>不想清了，按「取消」。</li>
+      </ol>
+      <p class="warn">清掉的資料找不回來，尤其是照片，按之前請想清楚。</p>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>7. 出發前建議做的事</summary>
+    <div class="gd-b">
+      <ul>
+        <li>出發前先在有網路的地方打開一次，確認章、照片、清單都能正常使用。</li>
+        <li>天氣和字型需要網路。沒網路時天氣會顯示不出來，字型可能變成系統字型。</li>
+        <li>照片原圖留在手機相簿。要再備份的話，可以傳到雲端或家人群組。</li>
+        <li>不要在回家前清除瀏覽器資料，也不要用無痕模式開。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="gd">
+    <summary>8. 常見問題</summary>
+    <div class="gd-b">
+      <p><b>照片頁出現「無法保存照片」？</b><br>這個環境不能存。請把 index.html 存到手機，再用 Safari 或 Chrome 直接開啟。LINE、IG 等內建瀏覽器常有這個問題。</p>
+      <p><b>章不見了？</b><br>通常是清除過瀏覽器資料、用了無痕模式，或換了開啟方式（例如從 Safari 改成主畫面）。</p>
+      <p><b>刪除按了沒反應？</b><br>第一次按只會變成「再按一次刪除」，3 秒內要再按一次。</p>
+      <p><b>想換手機怎麼辦？</b><br>資料不會跟著走。照片請用原圖重新加入，章和清單需要重新建立。</p>
+    </div>
+  </details>
+</section>
+
 <section class="page" id="view-gifts" hidden aria-label="伴手禮清單">
   <div class="pagebar"><button class="back" data-go="cover">回封面</button><span class="ptitle">伴手禮清單</span></div>
   <h2 class="pg-h">要送誰</h2>
@@ -767,7 +905,13 @@ const days = [
     meals:[['早餐','飯店享用','m1'],['午餐','Jo Crispy Pork 喬先生脆皮燒肉粿雜湯','m2']], hotel:null
   }
 ];
+const SK = 'bkk-stamps-v1';
 const stamped = days.map(() => new Set());
+try {
+  const saved = JSON.parse(localStorage.getItem(SK));
+  if (Array.isArray(saved)) saved.forEach((arr, i) => { if (stamped[i] && Array.isArray(arr)) arr.forEach(n => stamped[i].add(n)); });
+} catch (e) {}
+const saveStamps = () => { try { localStorage.setItem(SK, JSON.stringify(stamped.map(x => [...x]))); } catch (e) {} };
 let cur = 0;
 
 /* ---------- illustration bits ---------- */
@@ -992,6 +1136,7 @@ panel.addEventListener('click', e=>{
     const on = set.has(i);
     li.classList.toggle('on', on);
     stopBtn.setAttribute('aria-pressed', on);
+    saveStamps();
     updateProgress(); renderTabs(); moveTuk(true);
     return;
   }
@@ -1001,6 +1146,7 @@ panel.addEventListener('click', e=>{
       li.classList.remove('on');
       li.querySelector('.stop').setAttribute('aria-pressed','false');
     });
+    saveStamps();
     updateProgress(); renderTabs(); moveTuk(true);
     return;
   }
@@ -1180,7 +1326,7 @@ loadWx(); setInterval(loadWx, 30*60*1000);
 })();
 
 /* ---------- views / routing ---------- */
-const VIEWS = ['cover','book','fx','gifts','photos'];
+const VIEWS = ['cover','book','fx','gifts','photos','guide'];
 function show(v){
   if (!VIEWS.includes(v)) v = 'cover';
   VIEWS.forEach(n => $('view-'+n).hidden = (n !== v));
@@ -1321,7 +1467,13 @@ $('people').addEventListener('click', e=>{
   const pid = art.dataset.p, act = e.target.dataset.act;
   if (act === 'delP'){
     const p = people.find(x=>x.id===pid);
-    if (p && (p.items.length === 0 || confirm(`刪除「${p.name}」和他的清單？`))){
+    const xb = e.target;
+    if (p && p.items.length && !xb.dataset.armed){
+      xb.dataset.armed = '1'; xb.textContent = '再按一次刪除';
+      setTimeout(() => { if (xb.isConnected){ delete xb.dataset.armed; xb.textContent = '刪除'; } }, 3000);
+      return;
+    }
+    if (p){
       people = people.filter(x=>x.id!==pid); savePeople(); renderPeople();
     }
   } else if (act === 'delI'){
@@ -1493,7 +1645,12 @@ $('photoList').addEventListener('click', e => {
   const id = art.dataset.id;
   const p = photos.find(x => x.id === id); if (!p) return;
   if (e.target.closest('[data-act="delPhoto"]')){
-    if (!confirm('要刪除這張照片嗎？')) return;
+    const xb = e.target.closest('[data-act="delPhoto"]');
+    if (!xb.dataset.armed){
+      xb.dataset.armed = '1'; xb.textContent = '再按一次刪除';
+      setTimeout(() => { if (xb.isConnected){ delete xb.dataset.armed; xb.textContent = '刪除'; } }, 3000);
+      return;
+    }
     photos = photos.filter(x => x.id !== id);
     photoDB.del(id).catch(warnPhoto);
     renderPhotos();
@@ -1530,6 +1687,34 @@ photoDB.all().then(list => {
   photos.sort(byNew);
   renderPhotos();
 }).catch(warnPhoto);
+
+/* ---------- wipe: type the same word to confirm ---------- */
+const WIPE = {
+  '章': [SK], '匯率': [RK], '購物清單': [GK], '照片': [], '全部': [SK, RK, GK]
+};
+let wipeKey = null;
+const wipeWord = k => '清除' + k;
+function closeWipe(){ wipeKey = null; $('wipeAsk').hidden = true; $('wipeIn').value = ''; $('wipeGo').disabled = true; }
+$('wipe').addEventListener('click', e => {
+  const b = e.target.closest('[data-w]'); if (!b) return;
+  wipeKey = b.dataset.w;
+  const extra = wipeKey === '全部' ? '（章、匯率、購物清單、照片都會清掉）' : wipeKey === '照片' ? '（照片刪掉就找不回來）' : '';
+  $('wipeMsg').textContent = `請輸入「${wipeWord(wipeKey)}」確認${extra}`;
+  $('wipeIn').value = ''; $('wipeGo').disabled = true;
+  $('wipeAsk').hidden = false; $('wipeIn').focus();
+});
+$('wipeIn').addEventListener('input', () => {
+  $('wipeGo').disabled = !(wipeKey && $('wipeIn').value.trim() === wipeWord(wipeKey));
+});
+$('wipeNo').addEventListener('click', closeWipe);
+$('wipeGo').addEventListener('click', async () => {
+  if (!wipeKey || $('wipeIn').value.trim() !== wipeWord(wipeKey)) return;
+  (WIPE[wipeKey] || []).forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  if (wipeKey === '照片' || wipeKey === '全部'){
+    try { for (const r of ((await photoDB.all()) || [])) await photoDB.del(r.id); } catch (e) {}
+  }
+  location.reload();
+});
 
 render(0);
 show(location.hash.slice(1) || 'cover');
